@@ -24,6 +24,7 @@ class Result:
        print("results.csv has been truncated")
 
    def resultInsert(email,assignment):  # Assigns class to student
+     LibUpdate()
      filename = "results.csv"
      identifier = "@"
 
