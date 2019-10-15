@@ -1,7 +1,10 @@
 import csv
+from collections import Counter
 
 # Global defining funcs
 mydict = []
+labelA = ['What is your 1st choice session?']
+labelB = ['What is your 1.2st choice session?']
 
 
 def LibUpdate():  # compiles csv file to dict
@@ -24,7 +27,9 @@ class Result:
             w.writeheader()
             print("results.csv has been truncated")
 
-    def resultInsert(email, assignment):  # Assigns class to student
+    def resultInsert(
+            email, assignment
+    ):  # Assigns class to student given email and assigned class id.
 
         LibUpdate()
         filename = "results.csv"
@@ -71,10 +76,10 @@ class analyze:
         choicesB = []
         countdictB = {}
         for x in mydict:
-            choiceA = x["What is your 1st choice session?"]
+            choiceA = x[labelA]
             choicesA.append(str(choiceA))
 
-            choiceB = x["What is your 1.2st choice session?"]
+            choiceB = x[labelB]
             choicesB.append(str(choiceB))
 
         reduxchoicesA = list(dict.fromkeys(choicesA))
@@ -107,10 +112,10 @@ class analyze:
         choicesB = []
         countdictB = {}
         for x in mydict:
-            choiceA = x["What is your 1st choice session?"]
+            choiceA = x[labelA[0]]
             choicesA.append(str(choiceA))
 
-            choiceB = x["What is your 1.2st choice session?"]
+            choiceB = x[labelB[0]]
             choicesB.append(str(choiceB))
 
         reduxchoicesA = list(dict.fromkeys(choicesA))
@@ -136,3 +141,49 @@ class analyze:
         print(
             f"Highest First choice class for block 1 is {HighestA}. Highest First choice class for block 2 is {HighestB}"
         )
+
+    def tops(num):  # Returns top num first choice classes
+        choicesA = []
+        countdictA = {}
+        choicesB = []
+        countdictB = {}
+
+        LibUpdate()
+
+        for x in mydict:
+            choiceA = x[labelA[0]]
+            choicesA.append(str(choiceA))
+
+            choiceB = x[labelB[0]]
+            choicesB.append(str(choiceB))
+
+        reduxchoicesA = list(dict.fromkeys(choicesA))
+        reduxchoicesB = list(dict.fromkeys(choicesB))
+
+        for x in reduxchoicesA:
+            countA = choicesA.count(x)
+
+            countdictA[x] = countA
+
+        d = Counter(countdictA)
+        mostA = []
+
+        for k, v in d.most_common(num):
+            mostA.append(k)
+
+        for x in reduxchoicesB:
+            countB = choicesB.count(x)
+
+            countdictB[x] = countB
+
+        c = Counter(countdictB)
+        mostB = []
+
+        for k, v in c.most_common(num):
+            mostB.append(k)
+
+        print(
+            f"The {num} highest first choice classes for block 1 are {mostA}. The {num} highest first choice class for block 2 are {mostB}"
+        )
+
+        return mostA, mostB
