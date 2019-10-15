@@ -3,8 +3,16 @@ from collections import Counter
 
 # Global defining funcs
 mydict = []
-labelA = ['What is your 1st choice session?']
-labelB = ['What is your 1.2st choice session?']
+labelA = [
+    'What is your 1st choice session?', "What is your 2nd choice session?",
+    "What is your 3rd choice session?", "What is your 4th choice session?",
+    "What is your 5th choice session?"
+]
+labelB = [
+    'What is your 1.2st choice session?', "What is your 2.2nd choice session?",
+    "What is your 3.2rd choice session?", "What is your 4.2th choice session?",
+    "What is your 5.2th choice session?"
+]
 
 
 def LibUpdate():  # compiles csv file to dict
@@ -106,16 +114,16 @@ class analyze:
             f"Lowest First choice class for block 1 is {lowestA}. Lowest First choice class for block 2 is {lowestB}"
         )
 
-    def mostPop():
+    def mostPop(choice):
         choicesA = []
         countdictA = {}
         choicesB = []
         countdictB = {}
         for x in mydict:
-            choiceA = x[labelA[0]]
+            choiceA = x[labelA[choice - 1]]
             choicesA.append(str(choiceA))
 
-            choiceB = x[labelB[0]]
+            choiceB = x[labelB[choice - 1]]
             choicesB.append(str(choiceB))
 
         reduxchoicesA = list(dict.fromkeys(choicesA))
@@ -142,7 +150,7 @@ class analyze:
             f"Highest First choice class for block 1 is {HighestA}. Highest First choice class for block 2 is {HighestB}"
         )
 
-    def tops(num):  # Returns top num first choice classes
+    def tops(num, choice):  # Returns top num *choice choice classes
         choicesA = []
         countdictA = {}
         choicesB = []
@@ -151,10 +159,10 @@ class analyze:
         LibUpdate()
 
         for x in mydict:
-            choiceA = x[labelA[0]]
+            choiceA = x[labelA[choice - 1]]
             choicesA.append(str(choiceA))
 
-            choiceB = x[labelB[0]]
+            choiceB = x[labelB[choice - 1]]
             choicesB.append(str(choiceB))
 
         reduxchoicesA = list(dict.fromkeys(choicesA))
@@ -183,7 +191,53 @@ class analyze:
             mostB.append(k)
 
         print(
-            f"The {num} highest first choice classes for block 1 are {mostA}. The {num} highest first choice class for block 2 are {mostB}"
+            f"The {num} highest {choice} choice classes for block 1 are {mostA}. The {num} highest {choice} choice class for block 2 are {mostB}"
         )
 
         return mostA, mostB
+
+    def bots(num, choice):  # Returns bottom num *choice choice classes
+        choicesA = []
+        countdictA = {}
+        choicesB = []
+        countdictB = {}
+
+        LibUpdate()
+
+        for x in mydict:
+            choiceA = x[labelA[choice - 1]]
+            choicesA.append(str(choiceA))
+
+            choiceB = x[labelB[choice - 1]]
+            choicesB.append(str(choiceB))
+
+        reduxchoicesA = list(dict.fromkeys(choicesA))
+        reduxchoicesB = list(dict.fromkeys(choicesB))
+
+        for x in reduxchoicesA:
+            countA = choicesA.count(x)
+
+            countdictA[x] = countA
+
+        d = Counter(countdictA)
+        leastA = []
+
+        for k, v in d.most_common()[:-num - 1:-1]:
+            leastA.append(k)
+
+        for x in reduxchoicesB:
+            countB = choicesB.count(x)
+
+            countdictB[x] = countB
+
+        c = Counter(countdictB)
+        leastB = []
+
+        for k, v in c.most_common()[:-num - 1:-1]:
+            leastB.append(k)
+
+        print(
+            f"The {num} lowest {choice} choice classes for block 1 are {leastA}. The {num} lowest {choice} choice class for block 2 are {leastB}"
+        )
+
+        return leastA, leastB
